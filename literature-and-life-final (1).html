@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Literature & Life — Control, Power & Freedom</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f5f0e8;
+    --ink: #1a1410;
+    --rust: #8b3a2a;
+    --gold: #c9a84c;
+    --muted: #6b5f52;
+    --light-muted: #ede7da;
+    --border: #d4c9b5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 48px;
+    background: rgba(245,240,232,0.93);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 8px;
+  }
+  nav .logo { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  nav ul { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+  nav ul a { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color 0.2s; }
+  nav ul a:hover { color: var(--rust); }
+
+  /* HERO */
+  #hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 80px; }
+  .hero-left { padding: 80px 60px 80px 80px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); }
+  .hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); margin-bottom: 32px; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(36px,5vw,68px); line-height: 1.1; font-weight: 900; margin-bottom: 12px; }
+  .hero-title em { font-style: italic; color: var(--rust); }
+  .hero-subtitle { font-family: 'Playfair Display', serif; font-size: clamp(16px,2vw,26px); font-style: italic; color: var(--muted); margin-bottom: 40px; }
+  .thesis-box { background: var(--ink); color: var(--cream); padding: 32px; border-left: 4px solid var(--gold); }
+  .thesis-box .label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+  .thesis-box p { font-size: 15px; line-height: 1.75; font-weight: 300; color: #e8e0d4; }
+  .hero-right { padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; gap: 28px; background: var(--light-muted); }
+  .work-card { border-top: 1px solid var(--border); padding-top: 20px; display: flex; gap: 20px; align-items: flex-start; }
+  .work-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--rust); padding-top: 4px; flex-shrink: 0; }
+  .work-info h3 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .work-info p { font-size: 13px; color: var(--muted); }
+
+  /* SECTIONS */
+  section { padding: 100px 80px; border-bottom: 1px solid var(--border); }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); margin-bottom: 16px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(28px,3.5vw,46px); font-weight: 900; line-height: 1.15; margin-bottom: 48px; }
+
+  /* IMAGES — contain so nothing is cut off */
+  .img-wrapper { position: relative; display: block; width: 100%; margin-bottom: 10px; background: rgba(0,0,0,0.06); }
+  .story-img {
+    width: 100%;
+    height: 300px;
+    display: block;
+    object-fit: contain;   /* full image visible, no cropping */
+    object-position: center;
+  }
+  /* dark-bg sections need a slightly darker bg behind contain images */
+  .dark-img-bg { background: rgba(255,255,255,0.04); }
+
+  .img-cap { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 28px; }
+  .img-cap-dark { color: rgba(255,255,255,0.28); }
+  .img-cap-light { color: var(--muted); }
+
+  /* FICTION */
+  #fiction { background: var(--ink); color: var(--cream); }
+  #fiction .section-label { color: var(--gold); }
+  #fiction .section-title { color: var(--cream); }
+  .fiction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .fiction-main { padding-right: 60px; border-right: 1px solid rgba(255,255,255,0.12); }
+  .fiction-side { padding-left: 60px; display: flex; flex-direction: column; gap: 40px; }
+  .lens-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid var(--gold); color: var(--gold); padding: 6px 14px; margin-bottom: 24px; }
+
+  /* TEXT */
+  .bt { font-size: 15px; line-height: 1.85; margin-bottom: 24px; }
+  .bt-dark { color: #d4ccbe; }
+  .bt-light { color: var(--muted); }
+
+  /* QUOTE BLOCKS */
+  .qb { border-left: 3px solid var(--rust); padding: 18px 24px; margin: 28px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; line-height: 1.75; color: #e8e0d4; background: rgba(255,255,255,0.04); }
+  .qb-light { border-left: 3px solid var(--ink); padding: 18px 24px; margin: 28px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; line-height: 1.75; color: var(--ink); background: var(--light-muted); }
+  .mla-cite { display: block; margin-top: 10px; font-family: 'DM Sans', sans-serif; font-style: normal; font-size: 13px; font-weight: 400; }
+  .mla-cite-dark { color: rgba(201,168,76,0.85); }
+  .mla-cite-light { color: var(--rust); }
+
+  /* SCHOLAR CARDS */
+  .sc { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 24px; }
+  .sc .sc-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .sc p { font-size: 14px; color: #c8c0b2; line-height: 1.75; margin-bottom: 10px; }
+  .sc .sc-q { border-left: 2px solid rgba(201,168,76,0.4); padding-left: 14px; font-style: italic; }
+  .sc .sc-author { font-size: 12px; color: rgba(255,255,255,0.3); font-style: italic; margin-top: 4px; }
+
+  /* AUDIO */
+  .audio-wrap { margin-top: 48px; background: var(--light-muted); border: 1px solid var(--border); padding: 28px 32px; }
+  .audio-wrap .aw-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rust); margin-bottom: 16px; }
+  .audio-wrap audio { width: 100%; height: 40px; accent-color: var(--rust); display: block; }
+
+  /* POETRY */
+  #poetry { background: var(--cream); }
+  .poetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .poem-card { border-top: 3px solid var(--ink); padding-top: 32px; }
+  .poem-card h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .poem-card .poet { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 24px; }
+  .poetry-bridge { grid-column: 1/-1; background: var(--light-muted); padding: 36px 40px; border-left: 4px solid var(--gold); margin-top: 12px; }
+  .poetry-bridge p { font-size: 15px; color: var(--muted); }
+  .poetry-bridge strong { color: var(--ink); font-weight: 500; }
+
+  /* DRAMA */
+  #drama { background: #1f1a14; color: var(--cream); }
+  #drama .section-label { color: var(--gold); }
+  #drama .section-title { color: var(--cream); }
+  .drama-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 60px; }
+  .stat-stack { display: flex; flex-direction: column; gap: 0; border: 1px solid rgba(255,255,255,0.1); }
+  .stat-item { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .stat-item:last-child { border-bottom: none; }
+  .stat-item .sn { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+  .stat-item .sd { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+  /* SYNTHESIS */
+  #synthesis { background: var(--cream); }
+  .syn-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .syn-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 580px; }
+  .syn-table th { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 14px 20px; border-bottom: 2px solid var(--ink); background: var(--light-muted); }
+  .syn-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.65; color: var(--muted); }
+  .syn-table td:first-child { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--ink); white-space: nowrap; }
+  .tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--rust); color: var(--rust); padding: 2px 8px; margin-top: 6px; }
+
+  /* REFLECTION */
+  #reflection { background: var(--light-muted); }
+  .reflect-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .reflect-card { background: var(--cream); padding: 36px; }
+  .reflect-card .rn { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--rust); letter-spacing: 0.2em; margin-bottom: 18px; text-transform: uppercase; }
+  .reflect-card h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; margin-bottom: 14px; }
+  .reflect-card p { font-size: 14px; color: var(--muted); line-height: 1.8; }
+
+  /* WORKS CITED */
+  #works-cited { background: var(--ink); color: var(--cream); }
+  #works-cited .section-label { color: var(--gold); }
+  #works-cited .section-title { color: var(--cream); font-size: 32px; }
+  .cit-list { list-style: none; }
+  .cit-list li { padding: 20px 0 20px 2.2em; text-indent: -2.2em; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; color: #c8c0b2; line-height: 1.75; }
+  .cit-list li:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+
+  /* EDIT BUTTON */
+  .edit-btn { position: fixed; bottom: 28px; right: 28px; z-index: 200; background: var(--ink); color: var(--gold); border: 1px solid var(--gold); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 20px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .edit-btn:hover { background: var(--gold); color: var(--ink); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 300; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--cream); border: 1px solid var(--border); padding: 48px; max-width: 440px; width: 90%; }
+  .modal-box h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+  .modal-box .m-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .modal-box input[type="password"] { width: 100%; padding: 12px 16px; font-family: 'DM Mono', monospace; font-size: 14px; border: 1px solid var(--border); background: var(--light-muted); color: var(--ink); margin-bottom: 6px; outline: none; }
+  .modal-box input[type="password"]:focus { border-color: var(--rust); }
+  .modal-error { color: var(--rust); font-size: 12px; font-family: 'DM Mono', monospace; margin-bottom: 14px; display: none; }
+  .modal-btns { display: flex; gap: 12px; margin-top: 8px; }
+  .modal-btns button { flex: 1; padding: 12px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--ink); }
+  .btn-confirm { background: var(--ink); color: var(--cream); }
+  .btn-confirm:hover { background: var(--rust); border-color: var(--rust); }
+  .btn-cancel { background: transparent; color: var(--muted); }
+
+  /* EDIT BAR */
+  .edit-bar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 500; background: var(--rust); color: var(--cream); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 24px; }
+  body.edit-mode .edit-bar { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  body.edit-mode [contenteditable="true"] { outline: 2px dashed var(--gold); outline-offset: 3px; cursor: text; }
+  body.edit-mode [contenteditable="true"]:focus { outline-color: #fff; }
+
+  /* IMAGE EDIT OVERLAY */
+  body.edit-mode .img-wrapper { cursor: pointer; }
+  body.edit-mode .img-wrapper::after { content: '✏️ Edit Image'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(139,58,42,0); color: transparent; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; transition: background 0.2s, color 0.2s; pointer-events: none; }
+  body.edit-mode .img-wrapper:hover::after { background: rgba(139,58,42,0.6); color: #fff; }
+  body.edit-mode .img-wrapper img { pointer-events: none; }
+
+  /* IMAGE EDITOR MODAL */
+  #imgModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 400; align-items: center; justify-content: center; }
+  #imgModal.open { display: flex; }
+  #imgModal .im-box { background: var(--cream); padding: 36px; max-width: 540px; width: 94%; border: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+  #imgModal h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; margin-bottom: 20px; }
+  #imgModal label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 16px; }
+  #imgModal input[type="text"], #imgModal input[type="number"] { width: 100%; padding: 10px 14px; border: 1px solid var(--border); background: var(--light-muted); font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink); outline: none; }
+  #imgModal input[type="range"] { width: 100%; accent-color: var(--rust); margin-top: 4px; }
+  #imgModal .im-preview { width: 100%; height: 140px; object-fit: contain; margin-top: 10px; margin-bottom: 4px; display: block; border: 1px solid var(--border); background: #eee; }
+  #imgModal .im-btns { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  #imgModal .im-btns button { flex: 1; min-width: 90px; padding: 11px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--ink); background: transparent; color: var(--ink); }
+  #imgModal .im-save { background: var(--ink) !important; color: var(--cream) !important; }
+  #imgModal .im-delete { border-color: var(--rust) !important; color: var(--rust) !important; }
+
+  /* FONT BAR */
+  #fontBar { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 450; background: var(--ink); border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; align-items: center; gap: 8px; flex-wrap: wrap; }
+  body.edit-mode #fontBar { display: flex; }
+  #fontBar select, #fontBar input[type="number"] { background: rgba(255,255,255,0.1); color: var(--cream); border: 1px solid rgba(255,255,255,0.2); font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 8px; outline: none; }
+  #fontBar input[type="number"] { width: 52px; }
+  #fontBar input[type="color"] { width: 28px; height: 28px; border: none; background: none; cursor: pointer; padding: 0; }
+  #fontBar .fb-btn { background: rgba(255,255,255,0.08); color: var(--cream); border: 1px solid rgba(255,255,255,0.18); font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 10px; cursor: pointer; }
+  #fontBar .fb-btn:hover { background: rgba(255,255,255,0.2); }
+  #fontBar .fb-sep { width: 1px; height: 22px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+  #fontBar .fb-lbl { color: rgba(255,255,255,0.45); font-family: 'DM Mono', monospace; font-size: 10px; }
+
+  /* FADE */
+  .fu { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fu.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 699px) {
+    nav { padding: 14px 16px; }
+    nav ul { gap: 10px; }
+    nav ul a { font-size: 10px; }
+    #hero { grid-template-columns: 1fr; min-height: auto; padding-top: 72px; }
+    .hero-left { padding: 48px 20px 36px; border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-right { padding: 32px 20px 48px; }
+    section { padding: 56px 20px; }
+    .fiction-grid { grid-template-columns: 1fr; }
+    .fiction-main { padding-right: 0; border-right: none; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+    .fiction-side { padding-left: 0; padding-top: 40px; }
+    .poetry-grid { grid-template-columns: 1fr; gap: 48px; }
+    .poetry-bridge { grid-column: 1; }
+    .drama-layout { grid-template-columns: 1fr; }
+    .stat-stack { margin-top: 32px; }
+    .reflect-grid { grid-template-columns: 1fr; }
+    #fontBar { bottom: 68px; left: 8px; right: 8px; transform: none; }
+    .edit-btn { bottom: 14px; right: 14px; padding: 10px 14px; font-size: 10px; }
+    .story-img { height: 220px; }
+  }
+
+  @media (min-width: 700px) and (max-width: 1023px) {
+    nav { padding: 16px 28px; }
+    #hero { grid-template-columns: 1fr 1fr; padding-top: 76px; }
+    .hero-left { padding: 60px 36px; }
+    .hero-right { padding: 60px 36px; }
+    section { padding: 80px 40px; }
+    .fiction-grid { grid-template-columns: 1fr; }
+    .fiction-main { padding-right: 0; border-right: none; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+    .fiction-side { padding-left: 0; padding-top: 40px; }
+    .poetry-grid { grid-template-columns: 1fr; gap: 48px; }
+    .poetry-bridge { grid-column: 1; }
+    .drama-layout { grid-template-columns: 1fr; }
+    .reflect-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (min-width: 1024px) {
+    .syn-table-wrap { overflow-x: visible; }
+    .syn-table { min-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<!-- EDIT BAR -->
+<div class="edit-bar" id="editBar">
+  <span>✏️ EDIT MODE</span>
+  <div class="fb-sep"></div>
+  <span onclick="document.execCommand('bold')" style="cursor:pointer;font-weight:700;">B</span>
+  <span onclick="document.execCommand('italic')" style="cursor:pointer;font-style:italic;">I</span>
+  <span onclick="document.execCommand('underline')" style="cursor:pointer;text-decoration:underline;">U</span>
+  <div class="fb-sep"></div>
+  <span onclick="exitEditMode()" style="cursor:pointer;text-decoration:underline;">✓ Exit &amp; Done</span>
+</div>
+
+<!-- FONT BAR -->
+<div id="fontBar">
+  <span class="fb-lbl">Font</span>
+  <select id="fFont" onchange="applyFont()">
+    <option value="'DM Sans',sans-serif">DM Sans</option>
+    <option value="'Playfair Display',serif">Playfair</option>
+    <option value="'DM Mono',monospace">Mono</option>
+    <option value="Georgia,serif">Georgia</option>
+    <option value="Arial,sans-serif">Arial</option>
+    <option value="'Times New Roman',serif">Times</option>
+  </select>
+  <span class="fb-lbl">Size</span>
+  <input type="number" id="fSize" value="15" min="8" max="72" onchange="applySize()" />
+  <span class="fb-lbl">Color</span>
+  <input type="color" id="fColor" value="#1a1410" oninput="applyColor()" />
+  <div class="fb-sep"></div>
+  <button class="fb-btn" onclick="document.execCommand('bold')"><b>Bold</b></button>
+  <button class="fb-btn" onclick="document.execCommand('italic')"><i>Italic</i></button>
+  <button class="fb-btn" onclick="document.execCommand('underline')"><u>Under</u></button>
+  <button class="fb-btn" onclick="document.execCommand('removeFormat')">Clear</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">Literature &amp; Life — Suvaan Patel</span>
+  <ul>
+    <li><a href="#fiction">Fiction</a></li>
+    <li><a href="#poetry">Poetry</a></li>
+    <li><a href="#drama">Drama</a></li>
+    <li><a href="#synthesis">Synthesis</a></li>
+    <li><a href="#reflection">Reflection</a></li>
+    <li><a href="#works-cited">Works Cited</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero" style="padding:0;border:none;">
+  <div class="hero-left fu">
+    <p class="hero-tag">ENG 1302 — Literature &amp; Life Presentation</p>
+    <h1 class="hero-title">Control,<br/><em>Power</em><br/>&amp; Freedom</h1>
+    <p class="hero-subtitle">How literature teaches us about real life</p>
+    <div class="thesis-box">
+      <p class="label">Central Thesis</p>
+      <p>Literature teaches us about real life by showing how people respond to systems of control they often cannot fully see, through tradition, oppression, and trauma. Whether it is a violent village ritual where everyone just shows up and does it, a woman whose only freedom lives in the tigers she stitches, a painter watching the horizon slowly fade, or a detective trapped inside his own past, the pattern is the same. People are shaped by forces bigger than them, and the way they respond to that says everything about what it means to be human.</p>
+    </div>
+  </div>
+  <div class="hero-right fu" style="transition-delay:0.15s">
+    <div class="work-card">
+      <span class="work-num">01</span>
+      <div class="work-info">
+        <h3>"The Lottery" — Shirley Jackson</h3>
+        <p>Short Fiction · Marxist Critical Lens</p>
+      </div>
+    </div>
+    <div class="work-card">
+      <span class="work-num">02</span>
+      <div class="work-info">
+        <h3>"Aunt Jennifer's Tigers" — Adrienne Rich</h3>
+        <p>Poetry · Oppression &amp; Art as Escape</p>
+      </div>
+    </div>
+    <div class="work-card">
+      <span class="work-num">03</span>
+      <div class="work-info">
+        <h3>"Cloud Painter" — Jane Flanders</h3>
+        <p>Poetry · Perception &amp; Reality Fading</p>
+      </div>
+    </div>
+    <div class="work-card">
+      <span class="work-num">04</span>
+      <div class="work-info">
+        <h3><em>True Detective</em> — Nic Pizzolatto</h3>
+        <p>Drama / TV · Trauma, Truth &amp; Control</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FICTION ══ -->
+<section id="fiction">
+  <div class="section-label">01 — Short Fiction</div>
+  <h2 class="section-title fu">"The Lottery"<br/>Shirley Jackson</h2>
+  <div class="fiction-grid">
+    <div class="fiction-main fu">
+      <span class="lens-badge">Marxist Critical Lens</span>
+
+      <div class="img-wrapper dark-img-bg" onclick="openImgModal(this)">
+        <img class="story-img"
+          src="https://englishpluspodcast.com/wp-content/uploads/2023/05/The-Lottery-by-Shirley-Jackson.jpg"
+          alt="The Lottery by Shirley Jackson"
+          style="filter:sepia(18%) contrast(1.08) brightness(0.85);" />
+      </div>
+      <p class="img-cap img-cap-dark">The Lottery — Shirley Jackson, 1948</p>
+
+      <p class="bt bt-dark">What stood out to me when I first read this story is how normal everything feels at the beginning. The morning is described as clear and sunny, kids are playing, neighbors are talking. You almost forget something dark is coming. That calm tone is exactly what makes the ending so disturbing, and so meaningful. Jackson writes it like a community event, like a fair. And that is the point. The violence hides inside the ordinary.</p>
+
+      <p class="bt bt-dark">From a Marxist perspective, the lottery is not just a tradition. It is a system. No single person runs it, the system does. The black box, the slips of paper, Old Man Warner defending it, all of it works together to keep people in line without anyone feeling fully responsible. That is what makes it so hard to question. When everyone is doing it, nobody has to own it.</p>
+
+      <div class="qb">
+        "The black box grew shabbier each year; by now it was no longer completely black but splintered badly along one side to show the original wood color."
+        <span class="mla-cite mla-cite-dark">(Jackson 339)</span>
+      </div>
+
+      <p class="bt bt-dark">The box is falling apart, but nobody replaces it. That detail says everything. The tradition has lost its original meaning, but people keep doing it because stopping feels more dangerous than continuing. Even Mr. Summers mentions replacing it and nothing ever happens. The meaning is gone. What remains is habit and fear of being the one who breaks from the group.</p>
+
+      <div class="qb">
+        "There's always been a lottery."
+        <span class="mla-cite mla-cite-dark">(Jackson 341)</span>
+      </div>
+
+      <p class="bt bt-dark">Old Man Warner is not defending the lottery because he understands it. He is defending it because it has always existed. That is how harmful systems survive in real life, not through force, but through repetition until it feels like nature. And then there is Mrs. Hutchinson, laughing with her neighbors right up until her name is drawn. Once she becomes the target, she immediately says it is not fair. That shift is the most realistic thing in the entire story. People support systems until those systems turn on them personally.</p>
+    </div>
+
+    <div class="fiction-side fu" style="transition-delay:0.1s">
+      <div class="sc">
+        <p class="sc-label">Scholar — Teresa Hakaraia</p>
+        <p>Hakaraia argues that Jackson's story uses the three-legged stool to show how religion, politics, and economics can all become tools of control that work against the people they are supposed to serve. The lottery is not random. It is structured power disguised as tradition.</p>
+        <p class="sc-q">"Jackson uses the symbol of the stool to show readers that a society's patriarchal leaders have corrupted their economic, political and religious traditions so that they no longer benefit their subordinates, rather they are used to punish them"</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px;">(Hakaraia 137).</p>
+        <p class="sc-author">Hakaraia, Teresa. <em>Humanities</em>, vol. 8, no. 3, 2019, p. 137.</p>
+      </div>
+      <div class="sc">
+        <p class="sc-label">Scholar — Michael Robinson</p>
+        <p>Robinson connects the lottery's selection process to post-WWII Holocaust discourse, arguing that the system exploits self-interest to tear apart community bonds, turning neighbors and families against each other and making institutional violence feel like normal participation.</p>
+        <p class="sc-q">"The process of selection exploits self-interest to sever the bonds of family and turn neighbors against one another"</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px;">(Robinson 35).</p>
+        <p class="sc-author">Robinson, Michael. <em>Humanities</em>, vol. 8, no. 1, 2019, p. 35.</p>
+      </div>
+      <div class="sc">
+        <p class="sc-label">Real-Life Connection</p>
+        <p>The story is not about a fictional village. It is about every system where people participate in something harmful because everyone around them is doing it. The responsibility is spread so thin that no single person feels fully accountable, and that is exactly how it continues. You see it in workplaces, communities, institutions. Harmful things survive not because people are evil but because breaking from the group feels more dangerous than going along.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ POETRY ══ -->
+<section id="poetry">
+  <div class="section-label">02 — Poetry</div>
+  <h2 class="section-title fu">Two Poems,<br/>One Theme</h2>
+  <div class="poetry-grid">
+
+    <!-- AUNT JENNIFER -->
+    <div class="poem-card fu">
+      <h3>"Aunt Jennifer's Tigers"</h3>
+      <p class="poet">Adrienne Rich</p>
+
+      <!-- NEW IMAGE — Adrienne Rich NYT illustration -->
+      <div class="img-wrapper" onclick="openImgModal(this)">
+        <img class="story-img"
+          src="https://static01.nyt.com/images/2025/03/21/books/rich-illo/rich-illo-threeByTwoLargeAt2X-v2.jpg"
+          alt="Adrienne Rich — Aunt Jennifer's Tigers"
+          style="filter:sepia(8%) contrast(1.04);" />
+      </div>
+      <p class="img-cap img-cap-light">Adrienne Rich — poet, "Aunt Jennifer's Tigers"</p>
+
+      <p class="bt bt-light">This poem is about the gap between who Aunt Jennifer is and who she creates through her art. The tigers she stitches are fearless, proud, and free. She is not. That contrast is the whole poem, and it hit me once I really understood it. She is making something powerful with her hands while her hands are weighed down by something she cannot escape.</p>
+
+      <div class="qb-light">
+        "The tigers in the panel that she made / Will go on prancing, proud and unafraid."
+        <span class="mla-cite mla-cite-light">(Rich 11-12)</span>
+      </div>
+
+      <p class="bt bt-light">Even after she is gone, the tigers live on, untouched, unafraid. Her art outlasts her oppression. The one place she is truly free is the one place she creates, not the one place she actually lives. Most people read this poem and focus on how sad it is. I read it as resistance. She still made the tigers. She still created something that could not be controlled by anyone else.</p>
+
+      <div class="qb-light">
+        "The massive weight of Uncle's wedding band / Sits heavily upon Aunt Jennifer's hand."
+        <span class="mla-cite mla-cite-light">(Rich 7-8)</span>
+      </div>
+
+      <p class="bt bt-light">The word "massive" for a wedding ring is not an accident. Rich is saying the ring is not just jewelry, it is the physical weight of every expectation, every silence, every thing Aunt Jennifer cannot say or do. She carries it even while creating tigers that carry nothing. This connects to real life because people in situations they cannot easily leave often find their only real freedom in creative spaces, art, writing, or music, something they can fully control when everything else feels out of their hands.</p>
+
+      <div class="img-wrapper" onclick="openImgModal(this)">
+        <img class="story-img"
+          src="https://www.embroidery.rocksea.org/images/embroidery/uploads/Artforacause.jpeg"
+          alt="Art as resistance — embroidery"
+          style="filter:sepia(18%) contrast(1.05);" />
+      </div>
+      <p class="img-cap img-cap-light">Art as resistance — a way to say what words cannot</p>
+    </div>
+
+    <!-- CLOUD PAINTER -->
+    <div class="poem-card fu" style="transition-delay:0.12s">
+      <h3>"Cloud Painter"</h3>
+      <p class="poet">Jane Flanders</p>
+
+      <div class="img-wrapper" onclick="openImgModal(this)">
+        <img class="story-img"
+          src="https://www.erinhanson.com/content/inventoryimages/919cd90f-3c09-443f-a3e4-c12654dc75d9.jpg"
+          alt="Landscape painting — Cloud Painter"
+          style="filter:sepia(10%) contrast(1.04);" />
+      </div>
+      <p class="img-cap img-cap-light">Landscape — reality shaped by the viewer</p>
+
+      <p class="bt bt-light">This poem is quieter than "Aunt Jennifer's Tigers" but it shows something just as important, how reality shifts depending on who is looking at it, and how memory and perception shape what we think is real. I chose it because it connects to isolation in a different way. It is not an external force pressing down on someone. It is more like the world slowly becoming uncertain the longer someone stays inside their own experience.</p>
+
+      <div class="qb-light">
+        "the sky is incidental, a drape, a backdrop for trees and steeples."
+        <span class="mla-cite mla-cite-light">(Flanders 1-2)</span>
+      </div>
+
+      <p class="bt bt-light">From the very beginning, the sky, the actual thing the painter is supposed to be painting, is described as background. What we think is the main thing is sometimes just the frame for something else we have not noticed yet. The painter is looking at the sky and seeing everything but the sky. That is how perception works when you have been isolated long enough; your focus shifts and reality starts to look different from how it actually is.</p>
+
+      <div class="qb-light">
+        "horizons sink and fade."
+        <span class="mla-cite mla-cite-light">(Flanders 27-28)</span>
+      </div>
+
+      <p class="bt bt-light">The world itself starts to blur and disappear in this poem. It feels like memory slipping, or like a person who has been cut off from the world so long that even the landscape around them starts to feel uncertain. That connects to the theme because both the artist and Aunt Jennifer are dealing with something they cannot name or fight directly, one through isolation and fading reality, one through silence and weight.</p>
+    </div>
+
+    <div class="poetry-bridge fu">
+      <p><strong>Together, the two poems show different sides of the same idea.</strong> Aunt Jennifer creates art to express what she cannot live. The cloud painter uses observation and imagination to make sense of a world that keeps shifting. Both are responses to feeling like you cannot fully control your own life, and both show that creative expression or quiet observation can be a form of resistance, even when it looks like nothing from the outside.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DRAMA ══ -->
+<section id="drama">
+  <div class="section-label">03 — Drama / Additional Medium</div>
+  <h2 class="section-title fu"><em>True Detective</em><br/>Nic Pizzolatto</h2>
+  <div class="drama-layout">
+    <div class="fu">
+      <div class="img-wrapper dark-img-bg" onclick="openImgModal(this)">
+        <img class="story-img"
+          src="https://statico.soapcentral.com/editor/2025/10/4fa60-17605593347724.jpg"
+          alt="True Detective Season 1 — HBO"
+          style="filter:sepia(22%) contrast(1.1) brightness(0.72);" />
+      </div>
+      <p class="img-cap img-cap-dark">True Detective, Season 1 — HBO, 2014</p>
+
+      <p class="bt bt-dark">I chose True Detective because it shows the weight of internal control and trauma more directly than anything else I looked at this semester. It is not just a crime story. It is a story about how a person's past can become a kind of cage that shapes everything they see and every decision they make, even when they think they are moving forward and leaving it behind.</p>
+
+      <p class="bt bt-dark">Rustin Cohle is the clearest example of this. He is intelligent, observant, relentless, and completely trapped by his own mind and everything he has been through. His daughter died, his marriage fell apart, and instead of dealing with any of it he pours everything into the investigation. Work becomes his way of controlling a world he believes is fundamentally chaotic and cruel. The smart ones are sometimes the most stuck.</p>
+
+      <div class="qb">
+        "I think human consciousness is a tragic misstep in evolution."
+        <span class="mla-cite mla-cite-dark">(Pizzolatto, season 1, episode 1)</span>
+      </div>
+
+      <p class="bt bt-dark">That line is not just philosophy. It is what someone sounds like when awareness itself feels like a burden. He does not trust the world, does not trust people, and underneath all of that does not fully trust himself. His intelligence becomes another form of isolation. The more he understands, the more he feels disconnected from everyone around him. That shows how personal trauma can flip a strength into something that keeps you separate from everyone else.</p>
+
+      <div class="qb">
+        "Time is a flat circle."
+        <span class="mla-cite mla-cite-dark">(Pizzolatto, season 1, episode 5)</span>
+      </div>
+
+      <p class="bt bt-dark">The dual timeline in the show is the most important formal choice Pizzolatto makes. The story constantly moves between past and present, showing how what happened before never stops affecting what is happening now. That is not just a narrative trick, it is the central argument of the whole show. The past does not end. It repeats, it influences, it shapes who you are long after the event itself is over. Memory is not reliable. Truth is revealed slowly. Sometimes people describe the same event completely differently, which shows that truth is not one fixed thing, it is shaped by who is remembering it and what they have been through.</p>
+
+      <p class="bt bt-dark">This connects the whole project together. Rust's trauma functions the same way Aunt Jennifer's wedding band does, or the black box in "The Lottery", it is a weight from the past that controls the present, even when the person carrying it cannot fully see how much.</p>
+    </div>
+
+    <div class="stat-stack fu" style="transition-delay:0.1s">
+      <div class="stat-item">
+        <div class="sn">S1</div>
+        <div class="sd">Season 1, HBO 2014<br/>Created by Nic Pizzolatto</div>
+      </div>
+      <div class="stat-item">
+        <div class="sn">2</div>
+        <div class="sd">Timelines — past investigation and present-day interview sessions running simultaneously, showing how truth builds slowly</div>
+      </div>
+      <div class="stat-item">
+        <div class="sn">1</div>
+        <div class="sd">Central idea: truth is not revealed all at once — it builds through memory, contradiction, and reflection over time</div>
+      </div>
+      <div class="stat-item">
+        <div class="sn">∞</div>
+        <div class="sd">"Time is a flat circle" — the past keeps cycling into the present, shaping every decision Rust makes without him fully realizing it</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SYNTHESIS ══ -->
+<section id="synthesis">
+  <div class="section-label">04 — Synthesis</div>
+  <h2 class="section-title fu">The Pattern<br/>Across All Texts</h2>
+
+  <div class="syn-table-wrap">
+    <table class="syn-table fu">
+      <thead>
+        <tr>
+          <th>Work</th>
+          <th>How Control Appears</th>
+          <th>The Response</th>
+          <th>Real-Life Connection</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"The Lottery"<br/><span class="tag">Marxist</span></td>
+          <td>A violent tradition disguised as community ritual. No single person runs it, the system does. Responsibility is spread so thin that no one feels fully accountable for what they are participating in.</td>
+          <td>Most conform without question. Mrs. Hutchinson only resists once she becomes the target herself, showing that people support systems until those systems turn against them personally.</td>
+          <td>Harmful practices in institutions and communities survive not because people are evil but because the weight of tradition makes questioning feel more dangerous than going along with it.</td>
+        </tr>
+        <tr>
+          <td>"Aunt Jennifer's Tigers"<br/><span class="tag">Oppression</span></td>
+          <td>Marriage as a structure of weight and silence. The wedding ring as the physical symbol of everything Aunt Jennifer cannot escape, every expectation, every silence, every thing she cannot say.</td>
+          <td>She creates tigers, fearless, free, and proud, because she cannot be those things in her actual life. Art becomes the only space where she has full control. The tigers outlive her oppression.</td>
+          <td>People in constrained situations often find their real freedom in creative expression when other forms of freedom are closed off. It looks quiet from the outside but it is its own form of resistance.</td>
+        </tr>
+        <tr>
+          <td>"Cloud Painter"<br/><span class="tag">Perception</span></td>
+          <td>Not external oppression but internal, isolation and time slowly erode the painter's grip on what is real. The world itself starts fading at the edges. Even the horizon sinks and disappears.</td>
+          <td>The painter keeps observing, keeps making meaning out of shifting clouds and disappearing landscapes. Observation becomes a way of holding on when the world keeps shifting underneath you.</td>
+          <td>Long-term isolation changes how people see reality. When someone is cut off long enough, their world becomes smaller, less certain, more shaped by memory than by what is actually in front of them.</td>
+        </tr>
+        <tr>
+          <td><em>True Detective</em><br/><span class="tag">Trauma</span></td>
+          <td>Internal trauma functioning as a cage. Rust's past, his daughter's death, his broken marriage, shapes every perception he has, every relationship he cannot maintain, every conclusion he reaches.</td>
+          <td>He pours himself into investigation. Work becomes his way of creating order in a world he believes is fundamentally chaotic. But the trauma never resolves, it just keeps cycling back into the present.</td>
+          <td>In real life, past experiences control present behavior in ways people often cannot fully see. The past does not disappear, it repeats itself until it is actually acknowledged and dealt with directly.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AUDIO — your uploaded file baked in -->
+  <div class="audio-wrap">
+    <p class="aw-label">🎙 Full Presentation Audio — Suvaan Patel</p>
+    <audio controls>
+      <source src="Literature-presentation.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+</section>
+
+<!-- ══ REFLECTION ══ -->
+<section id="reflection">
+  <div class="section-label">05 — Required Reflection</div>
+  <h2 class="section-title fu">How I Got Here</h2>
+  <div class="reflect-grid">
+    <div class="reflect-card fu">
+      <p class="rn">Theme Selection</p>
+      <h3>Why Control, Power &amp; Freedom?</h3>
+      <p>When I looked back at all the stories I picked throughout the semester, "The Lottery," "A Rose for Emily," True Detective, and the poems, I kept noticing the same pattern showing up. Characters being trapped. Not always by one person but by systems, traditions, relationships, or their own past. I did not decide this theme at the beginning. I noticed it after the fact, looking across everything I had already analyzed. That actually made it feel more honest; it came from the work, not from me forcing a connection onto it. But it also helped me develop a sense of awareness about this pattern in our society.</p>
+    </div>
+    <div class="reflect-card fu" style="transition-delay:0.08s">
+      <p class="rn">Thesis Development</p>
+      <h3>How I arrived at my central argument</h3>
+      <p>The guiding question is how literature teaches us about real life. My answer came from noticing that the most meaningful moments across all these texts were not the big dramatic events, they were the quieter moments where a character realizes they are trapped, tries to escape in some small way, or stops questioning something they should be questioning. That realization is not fictional. It is something real people experience all the time in their own lives, in systems and relationships they are too close to see clearly.</p>
+    </div>
+    <div class="reflect-card fu" style="transition-delay:0.1s">
+      <p class="rn">Lens Application</p>
+      <h3>Why Marxist Criticism for The Lottery?</h3>
+      <p>I chose Marxist criticism because it is the lens that best explains how the lottery actually works. It is not about one villager being evil or one person in charge. It is about a system where power is invisible and distributed, where everyone participates and nobody feels responsible. The Marxist lens helped me see that the black box, the stool, Old Man Warner, they are not just story details. They represent parts of a larger control structure that keeps the whole thing running without a single person having to own it.</p>
+    </div>
+    <div class="reflect-card fu" style="transition-delay:0.12s">
+      <p class="rn">Medium Choice</p>
+      <h3>Why a website?</h3>
+      <p>Because I wanted to showcase all my learning in a proper order and keep it intact for the long term, and for me it will be a lifelong learning that will be useful for real-life application when dealing with some kind of pain or going through hard times, or if someone close to me is going through a similar situation, I would definitely share this and share what I learned.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WORKS CITED ══ -->
+<section id="works-cited">
+  <div class="section-label">Works Cited</div>
+  <h2 class="section-title">MLA Format</h2>
+  <ul class="cit-list">
+    <li>Flanders, Jane. "Cloud Painter." <em>Portable Literature: Reading, Reacting and Writing</em>, 10th ed., edited by Laurie G. Kirszner and Stephen R. Mandell, Cengage, 2024.</li>
+    <li>Hakaraia, Teresa. "Shirley Jackson's 'The Lottery,' and William Empson's Seven Types of Ambiguity." <em>Humanities</em>, vol. 8, no. 3, 2019, p. 137. MDPI, https://doi.org/10.3390/h8030137.</li>
+    <li>Jackson, Shirley. "The Lottery." <em>Portable Literature: Reading, Reacting and Writing</em>, 10th ed., edited by Laurie G. Kirszner and Stephen R. Mandell, Cengage, 2024, pp. 338–347.</li>
+    <li>Pizzolatto, Nic, creator. <em>True Detective</em>. Performances by Matthew McConaughey and Woody Harrelson, season 1, Home Box Office (HBO), 2014.</li>
+    <li>Rich, Adrienne. "Aunt Jennifer's Tigers." <em>Portable Literature: Reading, Reacting and Writing</em>, 10th ed., edited by Laurie G. Kirszner and Stephen R. Mandell, Cengage, 2024.</li>
+    <li>Robinson, Michael. "Shirley Jackson's 'The Lottery' and Holocaust Literature." <em>Humanities</em>, vol. 8, no. 1, 2019, p. 35. MDPI, https://doi.org/10.3390/h8010035.</li>
+  </ul>
+</section>
+
+<!-- EDIT BUTTON -->
+<button class="edit-btn" onclick="openModal()">✏️ Edit</button>
+
+<!-- PASSWORD MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <h2>Edit Mode</h2>
+    <p class="m-sub">Enter your password to unlock full editing. Everyone can view — only you can edit.</p>
+    <input type="password" id="editPw" placeholder="Password..." onkeydown="if(event.key==='Enter')confirmEdit()" />
+    <p class="modal-error" id="editErr">Wrong password. Try again.</p>
+    <div class="modal-btns">
+      <button class="btn-confirm" onclick="confirmEdit()">Unlock</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE EDITOR MODAL -->
+<div id="imgModal">
+  <div class="im-box">
+    <h3>Edit Image</h3>
+    <label>Swap Image — paste a new URL</label>
+    <input type="text" id="im-url" placeholder="https://..." />
+    <img id="im-preview" class="im-preview" src="" alt="preview" />
+    <label>Height (px)</label>
+    <input type="number" id="im-height" value="300" min="80" max="900" oninput="previewImg()" />
+    <label>Brightness — <span id="bv">100</span>%</label>
+    <input type="range" id="im-bright" min="30" max="180" value="100" oninput="document.getElementById('bv').textContent=this.value;previewImg()" />
+    <label>Contrast — <span id="cv">100</span>%</label>
+    <input type="range" id="im-contrast" min="50" max="200" value="100" oninput="document.getElementById('cv').textContent=this.value;previewImg()" />
+    <label>Sepia — <span id="sv">0</span>%</label>
+    <input type="range" id="im-sepia" min="0" max="100" value="0" oninput="document.getElementById('sv').textContent=this.value;previewImg()" />
+    <div class="im-btns">
+      <button class="im-save" onclick="saveImg()">✓ Save</button>
+      <button onclick="closeImgModal()">Cancel</button>
+      <button class="im-delete" onclick="deleteImg()">🗑 Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* FADE */
+  const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+
+  /* PASSWORD — change "Suvaan2024" to anything you want, one place only */
+  const PW = "Suvaan2024";
+  let editOn = false;
+
+  function openModal(){
+    document.getElementById('editModal').classList.add('open');
+    document.getElementById('editPw').value='';
+    document.getElementById('editErr').style.display='none';
+    setTimeout(()=>document.getElementById('editPw').focus(),80);
+  }
+  function closeModal(){ document.getElementById('editModal').classList.remove('open'); }
+  function confirmEdit(){
+    if(document.getElementById('editPw').value===PW){ closeModal(); enterEdit(); }
+    else{ document.getElementById('editErr').style.display='block'; document.getElementById('editPw').value=''; document.getElementById('editPw').focus(); }
+  }
+  document.getElementById('editModal').addEventListener('click',function(e){ if(e.target===this)closeModal(); });
+
+  function enterEdit(){
+    editOn=true;
+    document.body.classList.add('edit-mode');
+    document.querySelectorAll(
+      '.bt,.bt-dark,.bt-light,.qb,.qb-light,.thesis-box p,.reflect-card p,'+
+      '.sc p,.syn-table td,.work-info h3,.work-info p,.reflect-card h3,'+
+      '.sd,.poetry-bridge p,.hero-tag,.hero-subtitle,.section-title,'+
+      '.poem-card h3,.poem-card .poet,.img-cap,.lens-badge,'+
+      '.sc-label,.sc-q,.sc-author,.sn,.tag,.mla-cite,.thesis-box .label,.rn,.cit-list li'
+    ).forEach(el=>{ el.setAttribute('contenteditable','true'); el.setAttribute('spellcheck','true'); });
+  }
+  function exitEditMode(){
+    editOn=false;
+    document.body.classList.remove('edit-mode');
+    document.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    closeImgModal();
+  }
+
+  /* FONT TOOLBAR */
+  function applyFont(){ document.execCommand('fontName',false,document.getElementById('fFont').value); }
+  function applySize(){
+    const sz=document.getElementById('fSize').value+'px';
+    const sel=window.getSelection();
+    if(!sel.rangeCount) return;
+    const r=sel.getRangeAt(0);
+    const s=document.createElement('span');
+    s.style.fontSize=sz;
+    try{ r.surroundContents(s); }catch(e){}
+  }
+  function applyColor(){ document.execCommand('foreColor',false,document.getElementById('fColor').value); }
+
+  /* IMAGE EDITOR */
+  let curW=null;
+  function openImgModal(wrapper){
+    if(!editOn) return;
+    curW=wrapper;
+    const img=wrapper.querySelector('img');
+    document.getElementById('im-url').value=img.src;
+    document.getElementById('im-height').value=parseInt(img.style.height)||300;
+    const f=img.style.filter||'';
+    const b=Math.round(parseFloat((f.match(/brightness\(([\d.]+)\)/)||[,'1'])[1])*100);
+    const c=Math.round(parseFloat((f.match(/contrast\(([\d.]+)\)/)||[,'1'])[1])*100);
+    const s=Math.round(parseFloat((f.match(/sepia\(([\d.]+)\)/)||[,'0'])[1])*100);
+    document.getElementById('im-bright').value=b; document.getElementById('bv').textContent=b;
+    document.getElementById('im-contrast').value=c; document.getElementById('cv').textContent=c;
+    document.getElementById('im-sepia').value=s; document.getElementById('sv').textContent=s;
+    document.getElementById('im-preview').src=img.src;
+    document.getElementById('imgModal').classList.add('open');
+  }
+  function previewImg(){
+    const p=document.getElementById('im-preview');
+    const url=document.getElementById('im-url').value.trim();
+    if(url) p.src=url;
+    p.style.height=document.getElementById('im-height').value+'px';
+    p.style.filter=`sepia(${document.getElementById('im-sepia').value}%) contrast(${document.getElementById('im-contrast').value}%) brightness(${document.getElementById('im-bright').value}%)`;
+  }
+  function saveImg(){
+    if(!curW) return;
+    const img=curW.querySelector('img');
+    const url=document.getElementById('im-url').value.trim();
+    if(url) img.src=url;
+    img.style.height=document.getElementById('im-height').value+'px';
+    img.style.filter=`sepia(${document.getElementById('im-sepia').value}%) contrast(${document.getElementById('im-contrast').value}%) brightness(${document.getElementById('im-bright').value}%)`;
+    closeImgModal();
+  }
+  function deleteImg(){
+    if(!curW) return;
+    if(confirm('Delete this image? Reload the page to restore it.')){ curW.style.display='none'; closeImgModal(); }
+  }
+  function closeImgModal(){ document.getElementById('imgModal').classList.remove('open'); curW=null; }
+  document.getElementById('im-url').addEventListener('input',function(){ if(this.value.trim()) document.getElementById('im-preview').src=this.value.trim(); });
+  document.getElementById('imgModal').addEventListener('click',function(e){ if(e.target===this)closeImgModal(); });
+</script>
+
+</body>
+</html>
